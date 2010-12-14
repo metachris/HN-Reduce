@@ -1,0 +1,11 @@
+{
+  "name": "Hacker news item reduce",
+  "version": "1.0",
+  "background_page": "background.html",
+  "content_scripts": [
+    {
+      "matches": ["http://news.ycombinator.com/*"],
+      "js": ["hnreduce.js"]
+    }
+  ]
+}
