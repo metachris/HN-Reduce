@@ -1,7 +1,9 @@
-A chrome extension which allows you to permanently remove stories (can be 
-restored via the extension's options).
+A chrome extension to permanently remove stories on HN
+(can be restored via the extension's options anytime). 
+The extension adds a small clickable [remove] field next 
+to the stories. 
 
-Works on:
+Works on the following pages:
 
 - http://news.ycombinator.com/
 - http://news.ycombinator.com/ask
@@ -10,3 +12,4 @@ Works on:
 - http://news.ycombinator.com/best
 - http://news.ycombinator.com/active
 - http://news.ycombinator.com/noobstories
+
