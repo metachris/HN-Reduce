@@ -1,5 +1,4 @@
 function remove(id, href) { 
-    localStorage[href] = "1";
     _remove(href);
 
     // Push info to main extension so we can show it in the options later on
@@ -36,31 +35,27 @@ function _remove(href) {
     }            
 }
     
-function checkItemRows() {
+function reduce() {
     rows1 = document.getElementsByTagName("tr");
     if (rows1.length < 3) return false;
 
     var port = chrome.extension.connect({name: "isremoved"});
-    port.postMessage({href: "Knock knock"});
     port.onMessage.addListener(function(msg) {
         //console.log("is removed: " + msg.removed);
         if (msg.removed) {
             _remove(msg.removed);   
         }
     });
-    
-    // rows[0] ... first <tr> with item number, votearrow, title, url
-    // rows[1] ... first <tr> with metainfo
-    // rows[2] ... first <tr> with blank line
-    
+        
     // Get the tr from the main container which has the actual item table inside
     container = rows1[3]; // <tr> with the table with all news items
     
     // Get all the item tr's
     rows = container.getElementsByTagName("tr");    
+    // rows[0] ... first <tr> with item number, votearrow, title, url
+    // rows[1] ... first <tr> with metainfo
+    // rows[2] ... first <tr> with blank line
 
-    var toRemove = Array();
-        
     var len = rows.length;
     for (i=0; i<len; i++) {
         if (i%3 == 0) {
@@ -74,7 +69,7 @@ function checkItemRows() {
                 
                 // Add remove column
                 x = document.createElement('td');
-                x.innerHTML = " <small><a href='javascript:void(0);' style='color:lightgray;' onmouseover='this.parentNode.parentNode.parentNode.style.background=\"#fbfbf9\"' onmouseout='this.parentNode.parentNode.parentNode.style.background=\"\"'>[remove]</a></small>";
+                x.innerHTML = " <small style='color:lightgray; cursor:pointer;' onmouseover='this.parentNode.parentNode.style.background=\"#fbfbf9\"' onmouseout='this.parentNode.parentNode.style.background=\"\"'>[remove]</small>";
                 x.reduce_id = i;
                 x.reduce_href = link.href; 
                 x.addEventListener("click", function(e) {
@@ -89,4 +84,4 @@ function checkItemRows() {
     }
 }
 
-checkItemRows();
+reduce();
