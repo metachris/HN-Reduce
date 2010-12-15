@@ -2,6 +2,7 @@
   "name": "Hacker news item reduce",
   "version": "1.0",
   "background_page": "background.html",
+  "options_page": "options.html",
   
   "content_scripts": [
     {

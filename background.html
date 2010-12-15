@@ -1,7 +1,29 @@
 <html>
 <head>
 <script>
-var rows;
+// We need to access localStorage from background.html to be able to show it in the options.
+
+// Short lived connection: when user clicks on [remove]
+chrome.extension.onRequest.addListener(
+    function(request, sender, sendResponse) {
+        localStorage[request.remove] = "1";
+//        sendResponse({farewell: "goodbye"});
+    });
+
+function isRemoved(href) {
+    return localStorage[href] == 1;
+}
+
+// Long lived connection: on startup when all links are checked against localStorage
+chrome.extension.onConnect.addListener(function(port) {
+    console.assert(port.name == "isremoved");
+    port.onMessage.addListener(function(msg) {
+        r = isRemoved(msg.href);
+        if (r) { r = msg.href; } // passing back href to remove from inside content
+        port.postMessage({removed: r});
+    });
+});
+  
 chrome.tabs.executeScript(null, {file: "hnreduce.js"});
 </script>
 </head>
