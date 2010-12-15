@@ -1,0 +1,74 @@
+<html>
+<head><title>HN Reduce Extension Options</title></head>
+
+<script type="text/javascript">
+// Clear all removed items
+function clear_all() {
+    for (var key in localStorage) {
+        localStorage.removeItem(key);
+    }
+    restore_options();
+}
+
+function restore(uri) {
+    localStorage.removeItem(decodeURI(uri));
+    restore_options();
+}
+
+// Restores select box state to saved value from localStorage.
+function restore_options() {
+    var items = Array();
+    for (var key in localStorage) {
+        items.push(key);
+    }    
+    items.reverse();
+    
+    var x = document.getElementById("recent");
+    x.innerHTML = "";
+    for (var i in items) {
+        x.innerHTML += "<a href='javascript:restore(\"" + encodeURI(items[i]) + "\");'>restore</a>: " + items[i] + "<br />";        
+    }    
+    
+    /*
+    var table = document.getElementById("recent");
+    tbody = table.getElementsByTagName("tbody")[0];
+    table.removeChild(tbody);
+    
+    tbody = document.createElement("tbody");
+    
+    for (var i in items) {
+        tr = document.createElement("tr");
+        
+        td = document.createElement("td");
+        td.innerHTML = items[i];
+        td.style.width="500px";
+        tr.appendChild(td);
+        
+        td = document.createElement("td");
+        td.innerHTML = "restore";
+        td.style.vAlign = "top";
+        tr.appendChild(td);
+        
+        tbody.appendChild(tr);
+    }
+    table.appendChild(tbody);
+    */
+}
+
+</script>
+
+<body onload="restore_options()">
+
+<h1>HN Reduce Extension Options</h1>
+
+<strong>Recently removed stories</strong>
+<div id="recent"></div>
+<!--
+<table id="recent" style="margin:10px;">
+</table>
+-->
+
+<br>
+<button onclick="clear_all()">Clear All</button>
+</body>
+</html>
