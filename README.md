@@ -3,6 +3,10 @@ A chrome extension to permanently remove stories on HN
 The extension adds a small clickable [remove] field next 
 to the stories. 
 
+Author: Chris Hager (chris@metachris.org | http://metachris.org/)
+
+License: GPLv3
+
 Works on the following pages:
 
 - http://news.ycombinator.com/
@@ -13,3 +17,6 @@ Works on the following pages:
 - http://news.ycombinator.com/active
 - http://news.ycombinator.com/noobstories
 
+TODO:
+
+- Width of main table row for positioning [remove] column 

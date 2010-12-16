@@ -1,15 +1,30 @@
 <html>
 <head>
 <script>
-// We need to access localStorage from background.html to be able to show it in the options.
+var d = new Date();
 
-// Short lived connection: when user clicks on [remove]
+// Short lived connection for when user clicks on [remove]
 chrome.extension.onRequest.addListener(
     function(request, sender, sendResponse) {
+        // get current id for sorting
+        id = localStorage["current_id"];
+        if (id == undefined) {
+            id = 0;
+        } else {
+            id = parseInt(id);
+        }
+        
         localStorage[request.remove] = "1";
-//        sendResponse({farewell: "goodbye"});
-    });
+        
+        date = d.getFullYear() + "-" + parseInt(d.getMonth())+1 + "-" + d.getDate();         
+        localStorage["_removed_" + id] = id + "," + date + "," + request.remove;
 
+        id += 1;
+        localStorage["current_id"] = id;
+    }
+);
+
+// Check if item was previously removed
 function isRemoved(href) {
     return localStorage[href] == 1;
 }

@@ -10,8 +10,9 @@ function clear_all() {
     restore_options();
 }
 
-function restore(uri) {
+function restore(id, uri) {
     localStorage.removeItem(decodeURI(uri));
+    localStorage.removeItem("_removed_" + id);
     restore_options();
 }
 
@@ -19,14 +20,30 @@ function restore(uri) {
 function restore_options() {
     var items = Array();
     for (var key in localStorage) {
-        items.push(key);
+        if (key.substring(0, 9) == "_removed_") {
+            items.push(localStorage[key]);
+        }
     }    
+    items.sort();
     items.reverse();
     
+    document.getElementById("cnt").innerHTML = items.length;
+        
+    date_last = "";
     var x = document.getElementById("recent");
     x.innerHTML = "";
     for (var i in items) {
-        x.innerHTML += "<a href='javascript:restore(\"" + encodeURI(items[i]) + "\");'>restore</a>: " + items[i] + "<br />";        
+        id = items[i].substring(0, items[i].indexOf(","));
+        items[i] = items[i].substring(items[i].indexOf(",")+1);
+        date = items[i].substring(0, items[i].indexOf(","));
+        items[i] = items[i].substring(items[i].indexOf(",")+1);
+        
+        content = "<small>[<a href='javascript:restore(\"" + id + "\", \"" + encodeURI(items[i]) + "\");'>restore</a>]</small>&nbsp;&nbsp;" + items[i] + "<br />";
+        if (date != date_last) {
+            content = "<hr><p><b>" + date + "</b></p>" + content;
+            date_last = date;
+        }
+        x.innerHTML += content;
     }    
     
     /*
@@ -59,16 +76,17 @@ function restore_options() {
 
 <body onload="restore_options()">
 
-<h1>HN Reduce Extension Options</h1>
+<h2>HN Reduce Extension Options</h2>
 
-<strong>Recently removed stories</strong>
-<div id="recent"></div>
+<h3>Removed Stories: <span id="cnt"></span></h3>
+
+<p><div id="recent"></div></p>
 <!--
 <table id="recent" style="margin:10px;">
 </table>
 -->
 
-<br>
+<hr>
 <button onclick="clear_all()">Clear All</button>
 </body>
 </html>

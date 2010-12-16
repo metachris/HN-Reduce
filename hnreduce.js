@@ -1,14 +1,16 @@
+// Removal function called by clicking on [remove]
 function remove(id, href) { 
     _remove(href);
 
-    // Push info to main extension so we can show it in the options later on
+    // Push info to main extension to save in localStorage,
+    // so we can show it in the options later on
     chrome.extension.sendRequest({remove: href}, function(response) {
         console.log(response.farewell);
     });
 }
 
+// Remove from DOM
 function _remove(href) {
-    // console.log("x " + href);
     rows1 = document.getElementsByTagName("tr");
     tbody = rows1[3].getElementsByTagName("tbody")[0];
     rows = rows1[3].getElementsByTagName("tr");
@@ -21,7 +23,7 @@ function _remove(href) {
                 td_title = cols[2];                
                 link = td_title.getElementsByTagName("a")[0];
                 if (link.href == href) {
-                    // found   
+                    // found. remove now.
                     i1 = rows[i];
                     i2 = rows[i+1];
                     i3 = rows[i+2];
@@ -34,11 +36,9 @@ function _remove(href) {
         }        
     }            
 }
-    
-function reduce() {
-    rows1 = document.getElementsByTagName("tr");
-    if (rows1.length < 3) return false;
 
+// Main table parser. Traverses through DOM and removes row or adds [remove]    
+function reduce() {
     var port = chrome.extension.connect({name: "isremoved"});
     port.onMessage.addListener(function(msg) {
         //console.log("is removed: " + msg.removed);
@@ -48,6 +48,7 @@ function reduce() {
     });
         
     // Get the tr from the main container which has the actual item table inside
+    rows1 = document.getElementsByTagName("tr");
     container = rows1[3]; // <tr> with the table with all news items
     
     // Get all the item tr's
