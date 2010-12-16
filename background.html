@@ -16,7 +16,7 @@ chrome.extension.onRequest.addListener(
         
         localStorage[request.remove] = "1";
         
-        date = d.getFullYear() + "-" + parseInt(d.getMonth())+1 + "-" + d.getDate();         
+        date = d.getFullYear() + "-" + (parseInt(d.getMonth())+1) + "-" + d.getDate();         
         localStorage["_removed_" + id] = id + "," + date + "," + request.remove;
 
         id += 1;

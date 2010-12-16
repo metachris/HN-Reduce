@@ -1,9 +1,15 @@
 <html>
 <head><title>HN Reduce Extension Options</title></head>
-
+<style type="text/css">
+    body { padding:10px 10px; font-family:verdana; font-size:14px; }
+    .r1 {}
+    .r0 { background:#f7f9fc; -webkit-border-radius: 2px; }
+    .r { margin:2px 0px; padding: 2px 10px 2px 4px; }
+    .search { border:1px solid #b8b8b8; -webkit-border-radius: 2px; padding:0px 2px; }
+</style>
 <script type="text/javascript">
 // Clear all removed items
-function clear_all() {
+function restore_all() {
     for (var key in localStorage) {
         localStorage.removeItem(key);
     }
@@ -17,8 +23,9 @@ function restore(id, uri) {
 }
 
 // Restores select box state to saved value from localStorage.
+var items;
 function restore_options() {
-    var items = Array();
+    items = Array();
     for (var key in localStorage) {
         if (key.substring(0, 9) == "_removed_") {
             items.push(localStorage[key]);
@@ -26,26 +33,32 @@ function restore_options() {
     }    
     items.sort();
     items.reverse();
-    
-    document.getElementById("cnt").innerHTML = items.length;
+    show_results(items.slice(), false);
+}
+
+function show_results(items, isSearch) {    
+    document.getElementById("cnt").innerHTML = (isSearch) ? "Found stories: " + items.length : "Removed stories: " + items.length;
         
     date_last = "";
     var x = document.getElementById("recent");
-    x.innerHTML = "";
+    x.innerHTML = "<p>";
+    cnt = 0;
     for (var i in items) {
         id = items[i].substring(0, items[i].indexOf(","));
         items[i] = items[i].substring(items[i].indexOf(",")+1);
         date = items[i].substring(0, items[i].indexOf(","));
         items[i] = items[i].substring(items[i].indexOf(",")+1);
         
-        content = "<small>[<a href='javascript:restore(\"" + id + "\", \"" + encodeURI(items[i]) + "\");'>restore</a>]</small>&nbsp;&nbsp;" + items[i] + "<br />";
+        content = "<div class='r r" + cnt%2 + "'><small>[<a href='javascript:restore(\"" + id + "\", \"" + encodeURI(items[i]) + "\");'>restore</a>]</small>&nbsp;&nbsp;<a href='" + items[i] + "' style='text-decoration:none; color:#333;' target='_blank'>" + items[i] + "</a></div>";
         if (date != date_last) {
-            content = "<hr><p><b>" + date + "</b></p>" + content;
+            content = "<p><b>" + date + "</b></p><hr>" + content;
             date_last = date;
         }
         x.innerHTML += content;
+        cnt += 1;
     }    
-    
+    x.innerHTML += "</p><hr>";
+
     /*
     var table = document.getElementById("recent");
     tbody = table.getElementsByTagName("tbody")[0];
@@ -72,21 +85,45 @@ function restore_options() {
     */
 }
 
+function search(str) {
+    str = str.toLowerCase();
+    var results = Array();
+    for (var i in items) {
+        if (items[i].toLowerCase().indexOf(str) > -1) {
+            results.push(items[i]);
+        }
+    }
+    show_results(results, true);
+}
+
+function cancelSearch() {
+    restore_options();
+    document.getElementById("search").value="";
+}
 </script>
 
 <body onload="restore_options()">
 
-<h2>HN Reduce Extension Options</h2>
+<h2>HN Reduce Options</h2>
 
-<h3>Removed Stories: <span id="cnt"></span></h3>
+<p><span id="cnt"></span></p>
 
-<p><div id="recent"></div></p>
+<p>Search: <input type="text" id="search" class="search" onkeyup="search(this.value)" /> <a href="javascript:cancelSearch();" style="color:#b8b8b8; text-decoration:none;">x</a></p>
+<div id="searchresults"></div>
+
+<p><div id="recent" style="float:left;"></div><div style="clear:both;"></div></p>
 <!--
 <table id="recent" style="margin:10px;">
 </table>
 -->
 
-<hr>
-<button onclick="clear_all()">Clear All</button>
+
+<button onclick="restore_all()">Restore all</button>
+
+<br><br><br><br>
+
+<small><a style="text-decoration:none;" href="http://metachris.com/hn-reduce">http://metachris.com/hn-reduce</a></small>
+
+<!-- <script type="text/javascript">document.getElementById("search").focus();</script> -->
 </body>
 </html>
