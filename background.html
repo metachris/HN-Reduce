@@ -14,13 +14,18 @@ chrome.extension.onRequest.addListener(
             id = parseInt(id);
         }
         
-        localStorage[request.remove] = "1";
-        
+        // Save current id for next removal
+        localStorage["current_id"] = id + 1;
+
+        // Zero-pad id to enable correct sort order
+        id = id.toString(10);
+        while (id.length < 8) {
+            id = "0" + id;
+        }
+                
         date = d.getFullYear() + "-" + (parseInt(d.getMonth())+1) + "-" + d.getDate();         
         localStorage["_removed_" + id] = id + "," + date + "," + request.remove;
-
-        id += 1;
-        localStorage["current_id"] = id;
+        localStorage[request.remove] = "1";
     }
 );
 
